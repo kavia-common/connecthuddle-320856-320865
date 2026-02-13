@@ -142,6 +142,17 @@ export POSTGRES_DB="${DB_NAME}"
 export POSTGRES_PORT="${DB_PORT}"
 EOF
 
+# Apply application schema (idempotent)
+# Note: This uses db_connection.txt as the connection source.
+echo ""
+echo "Applying ConnectHuddle schema..."
+chmod +x ./apply_schema.sh 2>/dev/null || true
+./apply_schema.sh || {
+    echo "❌ Schema application failed. Check the logs above."
+    exit 1
+}
+
+echo ""
 echo "PostgreSQL setup complete!"
 echo "Database: ${DB_NAME}"
 echo "User: ${DB_USER}"
